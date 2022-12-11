@@ -1,0 +1,53 @@
+{% extends 'includes/base.html' %}
+{% block contenido %}
+<section class="row">
+    <div class="col-12-md col-12-sm">
+        <h2 class="text-center">
+            Cliente con flask
+        </h2>
+    </div>
+</section>
+<section class="row">
+    <header class="col-12 h3 text-center pt-4">
+        Rutas de servicio gratuito
+    </header>
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Generador de imagenes
+            </header>
+            <main class="card-body d-flex justify-content-center input-group mb-3">
+                <input id="generador" class="form-control" type="text" placeholder="Escriba algo que quiera generar">
+                <button type="button" id="generator_button" class="btn btn-primary">Generar</button>
+            </main>
+        </div>
+    </div>
+    <div class="col pt-4">
+        <img src="" alt="Aun no se genera la imagen" class="img-fluid" id="imagen">
+    </div>
+</section>
+
+<script>
+    document.getElementById("generator_button").addEventListener("click", () => {
+        let texto = document.getElementById('generador').value;
+        let json = {
+            text: texto
+        }
+
+        fetch('/generar_imagen', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+            
+        })
+        .then(response => response.json())
+        .then(response => 
+            document.getElementById('imagen').src = response.url
+        )
+          
+    })
+</script>
+{% endblock %}

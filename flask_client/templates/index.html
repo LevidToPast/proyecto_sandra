@@ -1,0 +1,55 @@
+{% extends 'includes/base.html' %}
+{% block contenido %}
+<section class="row">
+    <div class="col-12-md col-12-sm">
+        <h2 class="text-center">
+            Cliente con flask
+        </h2>
+    </div>
+</section>
+<section class="row">
+    <header class="col-12 h3 text-center pt-4">
+        Rutas de servicios
+    </header>
+    <div class="col">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Registrar calificaciones
+            </header>
+            <main class="card-body d-flex justify-content-center">
+                <a href="/registrar_calificaciones" class="btn btn-primary">Registrar calificaciones</a>
+            </main>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Servicio de dibujo gratuito
+            </header>
+            <main class="card-body d-flex justify-content-center">
+                <a href="/servicio_gratuito" class="btn btn-primary">generador de imagenes</a>
+            </main>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Consultar pagos
+            </header>
+            <main class="card-body d-flex justify-content-center">
+                <a href="/consultar_pagos" class="btn btn-primary">consultar pagos</a>
+            </main>
+        </div>
+    </div>
+    <div class="col">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Registrar pagos
+            </header>
+            <main class="card-body d-flex justify-content-center">
+                <a href="/registrar_pago" class="btn btn-primary">registrar pagos</a>
+            </main>
+        </div>
+    </div>
+</section>
+{% endblock %}

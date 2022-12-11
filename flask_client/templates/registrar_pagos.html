@@ -1,0 +1,174 @@
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Flask client</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.1/css/dataTables.bootstrap5.min.css">
+  </head>
+  <body class="bg-dark">
+    <nav class="navbar bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="/">
+            <img src="https://farm5.staticflickr.com/4463/buddyicons/150681110@N07_r.jpg?1508960746#150681110@N07" alt="Logo" width="80" height="80" class="d-inline-block align-text-top rounded">
+          </a>
+          <h2 class="text-white">Fic UAS</h2>
+        </div>
+      </nav>
+      <main class="container bg-light">
+        
+<section class="row">
+    <div class="col-12-md col-12-sm">
+        <h2 class="text-center">
+            Cliente con flask
+        </h2>
+    </div>
+</section>
+<section class="row">
+    <header class="col-12 h3 text-center pt-4">
+        Ruta de registro de pagos
+    </header>
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Registro de pago
+            </header>
+            <main class="card-body d-flex justify-content-center input-group mb-3">
+                <form action="">
+                    <div class="mb-3">
+                        <label for="numero_matricula" class="form-label">Numero de matricula</label>
+                        <input  required type="text" name="numero_matricula" class="form-control" id="numero_matricula" aria-describedby="emailHelp">
+                      </div>
+                      <div class="mb-3">
+                          <label for="tipo_pago" class="form-label">tipo de pago</label>
+                          <select id="tipo_pago" name="tipo_pago" class="form-select" required></select>
+                      </div>
+                      <div class="mb-3">
+                          <label for="instituto" class="form-label">instituto</label>
+                          <select id="instituto" name="instituto" class="form-select" required></select>
+                      </div>
+                      <div class="mb-3">
+                          <label for="asignatura" class="form-label">asignatura</label>
+                          <select id="asignatura" name="asignatura" class="form-select" required></select>
+                      </div>
+                      <button type="button" class="btn btn-primary" id="registrar_pago">agregar pago</button>
+                      <a href="/consultar_pagos" class="btn btn-primary">consultar pagos</a>
+                </form>
+            </main>
+        </div>
+    </div>
+</section>
+
+<script>
+    let select_option = document.getElementById('tipo_pago');
+    function addOpt(id, nombre) {
+        let opt = document.createElement('option');
+        opt.value = id;
+        opt.text = nombre;
+        select_option.add(opt);
+    }
+
+    fetch('http://localhost:8000/api/tipo_pagos', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response)
+        response['mensaje'].forEach(tipopago => {
+            addOpt(tipopago['id'], tipopago['tipo_pago'])
+        })
+    })
+</script>
+<script>
+    let select_instituto = document.getElementById('instituto');
+    function addOpt2(id, nombre) {
+        let opt = document.createElement('option');
+        opt.value = id;
+        opt.text = nombre;
+        select_instituto.add(opt);
+    }
+
+    fetch('http://localhost:8000/api/instituciones', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response)
+        response['mensaje'].forEach(tipopago => {
+            addOpt2(tipopago['id'], tipopago['nombre'])
+        })
+    })
+</script>
+<script>
+    let select_asignatura = document.getElementById('asignatura');
+    function addOpt3(id, nombre) {
+        let opt = document.createElement('option');
+        opt.value = id;
+        opt.text = nombre;
+        select_asignatura.add(opt);
+    }
+
+    fetch('http://localhost:8000/api/asignaturas', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(response => {
+        console.log(response)
+        response['mensaje'].forEach(tipopago => {
+            addOpt3(tipopago['id'], tipopago['nombre'])
+        })
+    })
+</script>
+<script>
+    document.getElementById('registrar_pago').addEventListener('click', () => {
+        let numero_matricula = document.getElementById('numero_matricula').value;;
+        let tipo_pago = document.getElementById('tipo_pago').value;
+        let institucion = document.getElementById('instituto').value;
+        let asignatura = document.getElementById('asignatura').value;
+
+        let json = {
+            numero_matricula: numero_matricula,
+            tipo_pago_id: parseInt(tipo_pago),
+            institucion_id: parseInt(institucion),
+            asignatura_id: parseInt(asignatura)
+        };
+
+        fetch('http://localhost:8000/api/estados_cuenta' , {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+        })
+        .then(response => response.json())
+        .then(response => {
+            if (response['estado']) {
+                alert('Se agregó el pago.')
+            } else {
+                alert(response['detail'])
+            }
+        })  
+    })
+</script>
+
+      </main>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-kenU1KFdBIe4zVF0s0G1M5b4hcpxyD9F7jL+jjXkk+Q2h455rYXK/7HAuoJl+0I4" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.1/js/dataTables.bootstrap5.min.js"></script>
+  </body>
+</html>

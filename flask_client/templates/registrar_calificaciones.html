@@ -1,0 +1,93 @@
+{% extends 'includes/base.html' %}
+{% block contenido %}
+<section class="row">
+    <div class="col-12-md col-12-sm">
+        <h2 class="text-center">
+            Cliente con flask
+        </h2>
+    </div>
+</section>
+<section class="row">
+    <header class="col-12 h3 text-center pt-4">
+        Rutas de registro de calificaciones
+    </header>
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Formulario registro calificaciones
+            </header>
+            <main class="card-body d-flex justify-content-center input-group mb-3">
+                <form>
+                    <div class="mb-3">
+                      <label for="numero_matricula" class="form-label">Numero de matricula</label>
+                      <input  required type="text" name="numero_matricula" class="form-control" id="numero_matricula" aria-describedby="emailHelp">
+                    </div>
+                    <div class="mb-3">
+                        <label for="asignatura" class="form-label">Asignatura</label>
+                        <select id="asignatura" name="asginatura" class="form-select" required></select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="calificacion" class="form-label">Calificacion</label>
+                        <input type="number" name="calificacion" id="calificacion" max="10" min="0" required>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="subir_calificaciones">subir calificacion</button>
+                    <a href="/consultar_pagos" class="btn btn-primary">consultar pagos</a>
+                  </form>
+            </main>
+        </div>
+    </div>
+</section>
+<script>
+    let select_asignaturas = document.getElementById("asignatura");
+
+    function addOpt(id, nombre) {
+        let opt = document.createElement('option');
+        opt.value = id;
+        opt.text = nombre;
+        select_asignaturas.add(opt);
+    }
+
+    fetch('http://localhost:8000/api/asignaturas', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        }
+    })
+    .then(response => response.json())
+    .then(response =>
+        response['mensaje'].forEach(asignatura => {
+            addOpt(asignatura['id'], asignatura['nombre'])
+        })
+    )
+</script>
+<script>
+    document.getElementById('subir_calificaciones').addEventListener('click', () => {
+        let numero_matricula = document.getElementById('numero_matricula').value;
+        let asignatura = document.getElementById('asignatura').value;
+        let calificacion = document.getElementById('calificacion').value;
+
+        let json = {
+            numero_matricula: numero_matricula,
+            asignatura_id: parseInt(asignatura),
+            calificacion: parseFloat(calificacion)
+        }
+        
+        fetch('http://localhost:8000/api/calificaciones/' + numero_matricula , {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(json)
+        })
+        .then(response => response.json())
+        .then(response => {
+            if (response['status']) {
+                alert(response['mensaje'])
+            } else {
+                alert(response['detail'])
+            }
+        })   
+    })
+</script>
+{% endblock %}

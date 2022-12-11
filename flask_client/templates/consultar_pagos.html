@@ -1,0 +1,87 @@
+{% extends 'includes/base.html' %}
+{% block contenido %}
+<section class="row">
+    <div class="col-12-md col-12-sm">
+        <h2 class="text-center">
+            Cliente con flask
+        </h2>
+    </div>
+</section>
+<section class="row">
+    <header class="col-12 h3 text-center pt-4">
+        Rutas de consultar pagos
+    </header>
+    <div class="col-12">
+        <div class="card">
+            <header class="card-header text-center bg-dark text-white">
+                Consultar pagos
+            </header>   
+            <main class="card-body d-flex justify-content-center input-group mb-3">
+                <input id="numero_matricula" class="form-control" type="text" placeholder="Porfavor ingrese el numero de matricula a consultar">
+                <button type="button" id="consultar_estado" class="btn btn-primary">consultar</button>
+            </main>
+        </div>
+    </div>
+    <div class="col-12 pt-4">
+        <div class="card">
+            <header class="card-header text-center bgdark text-white">
+                Tabla de estados de pago
+            </header>
+            <main class="card-body">
+                <table id="tabla" class="table table-stripted">
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>alumno</th>
+                            <th>tipo de pago</th>
+                            <th>institucion</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </main>
+        </div>
+    </div>
+</section>
+<script>
+    document.getElementById("consultar_estado").addEventListener("click", () => {
+        let numero_matricula = document.getElementById('numero_matricula').value;
+
+        fetch('http://localhost:8000/api/estados_cuenta/' + numero_matricula, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(response => {
+            let tabla = document.getElementById('tabla');
+            console.log(response)
+            response['estados_cuenta'].forEach(data => {
+                let fila = document.createElement('tr');
+                let id = document.createElement('td');
+                let alumno = document.createElement('td');
+                let pago = document.createElement('td');
+                let institucion = document.createElement('td');
+            
+                id.innerHTML = data['id'];
+                alumno.innerHTML = data['alumno'];
+                pago.innerHTML = data['pago'];
+                institucion.innerHTML = data['institucion'];
+
+                fila.appendChild(id);
+                fila.appendChild(alumno);
+                fila.appendChild(pago);
+                fila.appendChild(institucion);
+
+                tabla.appendChild(fila);
+            });
+        });
+    });
+</script>
+{% endblock %}
